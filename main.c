@@ -15,7 +15,7 @@ main()
 	ff = fopen("contentfile.txt", "r"); /* Read file */
 	if (ff) {
 		while ((c = getc(ff)) != EOF) {
-			/*  */
+			/* Read each character, putchar all and count nl, tb, bl */
 			if (c == '\t')
 				++tb;
 			if (c == ' ')
@@ -24,9 +24,11 @@ main()
 				++nl;
 			putchar(c);
 		}
+		/* Close file and present results */
 		fclose(ff);
-		printf("There are %d tabs, %d blanks, and %d newlines in file.\n", tb, bl, nl);
+		printf("\nThere are %d tabs, %d blanks, and %d newlines in file.\n", tb, bl, nl);
 	}
+	/* Present error message if file fails to be opened/found */
 	if (!ff) {
 		printf("Unable to open file\n");
 		return 1;
