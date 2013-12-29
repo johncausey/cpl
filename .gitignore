@@ -1,0 +1,6 @@
+
+# Ignore Content File
+/contentfile.txt
+
+# Ignore Compiled Program
+/main
