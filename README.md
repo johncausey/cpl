@@ -1,2 +1,3 @@
-This is a repo for C and C++
+
+This is a repo for C programs.
 
