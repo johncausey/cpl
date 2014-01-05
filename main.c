@@ -1,23 +1,19 @@
-// Program to read a file and
-// count newlines, tabs, and spaces.
+// Program to do stuff but not sure what yet.
 #include <stdio.h>
 
 int main( int argc, char ** argv ) {
 	FILE *ff; // Setting file
 	int c; // Setting int
 
-	ff = fopen("contentfile.txt", "r"); // Read file
+	ff = fopen("contentfile.txt", "r"); // Open file.
 	if (ff) {
 		while ((c = getc(ff)) != EOF) {
-			// Show file contents
-			putchar(c);
+			putchar(c); //Show file contents.
 		}
-		// Close file and present results
-		fclose(ff);
+		fclose(ff); // Close file.
 	}
-	// Present error message if file fails to be opened/found
 	if (!ff) {
-		printf("Unable to open file\n");
+		printf("Unable to open file\n"); // Error if no file.
 		return 1;
 	}
 }
