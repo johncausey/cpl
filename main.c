@@ -19,6 +19,7 @@ int main( int argc, char ** argv ) {
 			}
 			putchar(c); //Show file contents - remove later.
 		}
+		// Decision to find last 10 or show entire file.
 		if((nn <= 10)?(smfile()):(lafile(&nn)));
 		fclose(ff); // Close file.
 	}
