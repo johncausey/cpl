@@ -24,7 +24,7 @@ int main( int argc, char ** argv ) {
 		fclose(ff); // Close file.
 	}
 	// File does not exist.
-	if (!ff) {
+	else if (!ff) {
 		printf("Unable to open file.\n"); // Error if no file.
 		return 1;
 	}
