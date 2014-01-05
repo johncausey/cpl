@@ -22,6 +22,7 @@ int main( int argc, char ** argv ) {
 		// Decision to find last 10 or show entire file.
 		if((nn <= 10)?(smfile()):(lafile(&nn)));
 		fclose(ff); // Close file.
+		return 0;
 	}
 	// File does not exist.
 	else if (!ff) {
