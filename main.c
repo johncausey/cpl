@@ -9,7 +9,6 @@ int main( int argc, char ** argv ) {
 	int c;
 	int nn = 0;
 
-
 	ff = fopen("contentfile.txt", "r"); // Open file.
 	// File exists.
 	if (ff) {
@@ -34,11 +33,11 @@ int main( int argc, char ** argv ) {
 
 // Return entire file.
 int smfile(void) {
-	printf("Print all lines option (10 or less).\n");
+	printf("\nPrint all lines option (10 or less).\n\n");
 }
 
 // Return last 10 lines.
 int lafile(int *nn) {
-	printf("Print trailing lines, it has %d lines total.\n", *nn);
+	printf("\nPrint trailing lines, it has %d lines total.\n\n", *nn);
 	return 0;
 }
