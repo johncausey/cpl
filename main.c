@@ -25,17 +25,18 @@ int main( int argc, char ** argv ) {
 		lngpath(argv);                                  // Show file path
 		flsize(fp, &sf, &si);                           // Show file size
 		if ((nn <= 10) ? (smfile()) : (lafile(&nn)));   // Show all or end
-		printf("====================\n");
-		fclose(fp);                                     // Close file.
+		printf("====================\n\n");
+		fclose(fp);                                     // Close file
 		return 0;
 	}
-	// File does not exist.
+	// File does not exist
 	else if (!fp) {
-		printf("Unable to open file.\n");               // Error if no file.
+		printf("Unable to open file.\n");               // Error if no file
 		return 1;
 	}
 }
 
+// Return file size
 int flsize(FILE *in, float *sf, int *si) {
 	fseek(in, 0, SEEK_END);
 	*sf = *si = ftell(in);
@@ -44,9 +45,9 @@ int flsize(FILE *in, float *sf, int *si) {
 	return 0;
 }
 
-// Return file path.
+// Return file path
 int lngpath(char ** argv) {
-	char buf[PATH_MAX];                            // Filepath max size
+	char buf[PATH_MAX];                            // limits.h
 	char *pa = realpath(argv[1], buf);             // Realpath
 	if (*pa) {
 		printf("\nFile Location:  %s\n", buf);
@@ -56,13 +57,13 @@ int lngpath(char ** argv) {
 	return 0;
 }
 
-// Return entire file.
+// todo
 int smfile(void) {
 	printf("Print all lines option (10 or less).\n");
 	return 0;
 }
 
-// Return last 10 lines.
+// todo
 int lafile(int *nn) {
 	printf("Print trailing lines, it has %d lines total.\n", *nn);
 	return 0;
