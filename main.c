@@ -1,29 +1,31 @@
-// Program to return the last 10 lines of a file.
+// Program to return basic data on a selected file.
 #include <stdio.h>
 
 int smfile(void);
 int lafile(int *);
 
 int main( int argc, char ** argv ) {
-	FILE *ff;
-	int c, si;
-	float sf;
-	int nn = 0;
+	FILE *ff; // File
+	int c, si; // Character in file; File size
+	float sf; // File size
+	int nn = 0; // Newlines in file
 
-	ff = fopen("contentfile.txt", "r"); // Open file.
+	ff = fopen(argv[1], "r"); // Open file.
 	// File exists.
 	if (ff) {
 		
+		// Refactor 18-22
+		printf("\nFile name: %s", argv[1]);
 		fseek(ff, 0, SEEK_END);
 		sf = si = ftell(ff);
 		fseek(ff, 0, SEEK_SET);
-		printf("\nFile size: %3.2fk (%d bytes)\n", (sf/100), si );
-		
+		printf("\nFile size: %3.2fk (%d bytes)\n", (sf/1024), si );
+
 		while ((c = getc(ff)) != EOF) {
 			if(c == '\n') {
 				++nn;
 			}
-			putchar(c); //Show file contents - remove later.
+			// putchar(c); //Show file contents - remove later.
 		}
 
 		// Decision to find last 10 or show entire file.
