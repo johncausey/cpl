@@ -7,7 +7,8 @@
 #include <sys/stat.h>
 
 int file_size(FILE *);
-int file_location_and_modification(char ** argv);
+int file_location(char ** argv, char, char *);
+int file_moditifation(char ** argv);
 int whole_file(void);
 int partial_file(int *);
 
@@ -15,6 +16,8 @@ int main( int argc, char ** argv ) {
 	FILE *fp = fopen(argv[1], "r");      // File pointer
 	int c;                               // Character in file; File size
 	int nn = 0;                          // Newlines in file
+	char buf[PATH_MAX];                  // File path buf
+	char *pa = realpath(argv[1], buf);   // Get file path
 
 	// File exists
 	if (fp) {
@@ -24,7 +27,8 @@ int main( int argc, char ** argv ) {
 			}
 		}
 		printf("\n====================");
-		file_location_and_modification(argv);                     // Show file path
+		file_location(argv, *pa, buf);                            // Show file path
+		file_modification(argv);                                  // Show file last modified
 		file_size(fp);                                            // Show file size
 		if ((nn <= 10) ? (whole_file()) : (partial_file(&nn)));   // Show all or end
 		printf("====================\n\n");
@@ -50,21 +54,22 @@ int file_size(FILE *in) {
 }
 
 // Return file path
-int file_location_and_modification(char ** argv) {
-	char buf[PATH_MAX];
-	char *pa = realpath(argv[1], buf);
-	if (*pa) {
-		printf("\nFile location:%9s%s\n", "", buf);
-		struct stat st;
-		if (stat(buf, &st)) {
-			perror(buf);
-		} else {
-			char date[64];
-			strftime(date, sizeof(date), "%c", localtime(&(st.st_ctime)));
-			printf("File last modified:%4s%s\n", "", date);
-		}
+int file_location(char ** argv, char pa, char *buf) {
+	printf("\nFile location:%9s%s\n", "", buf);
+	return 0;
+}
+
+// Return last modification time
+int file_modification(char ** argv) {
+	char buf[PATH_MAX];                  // These should be removed,
+	char *pa = realpath(argv[1], buf);   // same data exists in main.
+	struct stat st;
+	if (stat(buf, &st)) {
+		perror(buf);
 	} else {
-		printf("\nFile Location:%9sNot found\n", "");
+		char date[64];
+		strftime(date, sizeof(date), "%c", localtime(&(st.st_ctime)));
+		printf("File last modified:%4s%s\n", "", date);
 	}
 	return 0;
 }
