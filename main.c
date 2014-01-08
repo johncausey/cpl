@@ -45,7 +45,7 @@ int file_size(FILE *in) {
 	fseek(in, 0, SEEK_END);
 	sf = si = ftell(in);
 	fseek(in, 0, SEEK_SET);
-	printf("File size:                %3.2fk (%d bytes)\n", (sf/1024), si );
+	printf("File size:%13s%3.2fk (%d bytes)\n", "", (sf/1024), (si));
 	return 0;
 }
 
@@ -54,29 +54,29 @@ int file_location(char ** argv) {
 	char buf[PATH_MAX];                            // limits.h
 	char *pa = realpath(argv[1], buf);             // Realpath
 	if (*pa) {
-		printf("\nFile Location:            %s\n", buf);
+		printf("\nFile location:%9s%s\n", "", buf);
 		struct stat st;
 		if (stat(buf, &st)) {
 			perror(buf);
 		} else {
 			char date[200];
 			strftime(date, sizeof(date), "%c", localtime(&(st.st_ctime)));
-			printf("File last modified at:    %s\n", date);
+			printf("File last modified:%4s%s\n", "", date);
 		}
 	} else {
-		printf("\nFile Location:            Not found\n");
+		printf("\nFile Location:%9sNot found\n", "");
 	}
 	return 0;
 }
 
 // todo
 int whole_file(void) {
-	printf("Print all lines option (10 or less).\n");
+	printf("\nPrint all lines option (10 or less).\n");
 	return 0;
 }
 
 // todo
 int partial_file(int *nn) {
-	printf("Print trailing lines, it has %d lines total.\n", *nn);
+	printf("\nPrint trailing lines, it has %d lines total.\n", *nn);
 	return 0;
 }
