@@ -3,15 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int flsize(FILE *, float *, int *);
+int flsize(FILE *);
 int lngpath(char ** argv);
 int smfile(void);
 int lafile(int *);
 
 int main( int argc, char ** argv ) {
 	FILE *fp = fopen(argv[1], "r");      // File pointer
-	int c, si;                           // Character in file; File size
-	float sf;                            // File size
+	int c;                               // Character in file; File size
 	int nn = 0;                          // Newlines in file
 
 	// File exists
@@ -23,7 +22,7 @@ int main( int argc, char ** argv ) {
 		}
 		printf("\n====================");
 		lngpath(argv);                                  // Show file path
-		flsize(fp, &sf, &si);                           // Show file size
+		flsize(fp);                                     // Show file size
 		if ((nn <= 10) ? (smfile()) : (lafile(&nn)));   // Show all or end
 		printf("====================\n\n");
 		fclose(fp);                                     // Close file
@@ -37,11 +36,14 @@ int main( int argc, char ** argv ) {
 }
 
 // Return file size
-int flsize(FILE *in, float *sf, int *si) {
+int flsize(FILE *in) {
+	int si;
+	float sf;
+
 	fseek(in, 0, SEEK_END);
-	*sf = *si = ftell(in);
+	sf = si = ftell(in);
 	fseek(in, 0, SEEK_SET);
-	printf("File size:      %3.2fk (%d bytes)\n", (*sf/1024), *si );
+	printf("File size:      %3.2fk (%d bytes)\n", (sf/1024), si );
 	return 0;
 }
 
