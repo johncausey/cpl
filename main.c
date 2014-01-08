@@ -1,5 +1,5 @@
 // Program to return basic data on a selected file.
-#include <limits.h>
+#include <limits.h> //PATH_MAX
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -51,8 +51,8 @@ int file_size(FILE *in) {
 
 // Return file path
 int file_location(char ** argv) {
-	char buf[PATH_MAX];                            // limits.h
-	char *pa = realpath(argv[1], buf);             // Realpath
+	char buf[PATH_MAX];
+	char *pa = realpath(argv[1], buf);
 	if (*pa) {
 		printf("\nFile location:%9s%s\n", "", buf);
 		struct stat st;
