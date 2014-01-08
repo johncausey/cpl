@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int flsize(FILE *);
-int lngpath(char ** argv);
-int smfile(void);
-int lafile(int *);
+int file_size(FILE *);
+int file_location(char ** argv);
+int whole_file(void);
+int partial_file(int *);
 
 int main( int argc, char ** argv ) {
 	FILE *fp = fopen(argv[1], "r");      // File pointer
@@ -21,11 +21,11 @@ int main( int argc, char ** argv ) {
 			}
 		}
 		printf("\n====================");
-		lngpath(argv);                                  // Show file path
-		flsize(fp);                                     // Show file size
-		if ((nn <= 10) ? (smfile()) : (lafile(&nn)));   // Show all or end
+		file_location(argv);                                      // Show file path
+		file_size(fp);                                            // Show file size
+		if ((nn <= 10) ? (whole_file()) : (partial_file(&nn)));   // Show all or end
 		printf("====================\n\n");
-		fclose(fp);                                     // Close file
+		fclose(fp);                                               // Close file
 		return 0;
 	}
 	// File does not exist
@@ -36,10 +36,9 @@ int main( int argc, char ** argv ) {
 }
 
 // Return file size
-int flsize(FILE *in) {
+int file_size(FILE *in) {
 	int si;
 	float sf;
-
 	fseek(in, 0, SEEK_END);
 	sf = si = ftell(in);
 	fseek(in, 0, SEEK_SET);
@@ -48,7 +47,7 @@ int flsize(FILE *in) {
 }
 
 // Return file path
-int lngpath(char ** argv) {
+int file_location(char ** argv) {
 	char buf[PATH_MAX];                            // limits.h
 	char *pa = realpath(argv[1], buf);             // Realpath
 	if (*pa) {
@@ -60,13 +59,13 @@ int lngpath(char ** argv) {
 }
 
 // todo
-int smfile(void) {
+int whole_file(void) {
 	printf("Print all lines option (10 or less).\n");
 	return 0;
 }
 
 // todo
-int lafile(int *nn) {
+int partial_file(int *nn) {
 	printf("Print trailing lines, it has %d lines total.\n", *nn);
 	return 0;
 }
