@@ -2,6 +2,9 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 int file_size(FILE *);
 int file_location(char ** argv);
@@ -42,7 +45,7 @@ int file_size(FILE *in) {
 	fseek(in, 0, SEEK_END);
 	sf = si = ftell(in);
 	fseek(in, 0, SEEK_SET);
-	printf("File size:      %3.2fk (%d bytes)\n", (sf/1024), si );
+	printf("File size:                %3.2fk (%d bytes)\n", (sf/1024), si );
 	return 0;
 }
 
@@ -51,9 +54,17 @@ int file_location(char ** argv) {
 	char buf[PATH_MAX];                            // limits.h
 	char *pa = realpath(argv[1], buf);             // Realpath
 	if (*pa) {
-		printf("\nFile Location:  %s\n", buf);
+		printf("\nFile Location:            %s\n", buf);
+		struct stat st;
+		if (stat(buf, &st)) {
+			perror(buf);
+		} else {
+			char date[200];
+			strftime(date, sizeof(date), "%c", localtime(&(st.st_ctime)));
+			printf("File last modified at:    %s\n", date);
+		}
 	} else {
-		printf("\nFile Location:  Not found\n");
+		printf("\nFile Location:            Not found\n");
 	}
 	return 0;
 }
