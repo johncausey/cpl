@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+
 int file_size(FILE *);
 int file_location(char ** argv, char, char *);
 int file_moditifation(char ** argv);
