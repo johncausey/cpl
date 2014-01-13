@@ -8,16 +8,18 @@ void main( int argc, char ** argv ) {
 	FILE * fw = fopen("minified.css", "w");
 	int c;
 	int i = 0;
-	char mintag[] = "\n\nMinified by John Causey.";
 
 	if (fr) {
 		while ((c = getc(fr)) != EOF ) {
-			if ()
-			putc(c, fw);
+			if ((c != '\n') && (c != '\t')) {
+				putc(c, fw);
+			}
 		}
-		fputs(mintag, fw);
 		printf("Minification Complete.\n");
 		fclose(fr);
 		fclose(fw);
+	}
+	else {
+		printf("File not found.");
 	}
 }
