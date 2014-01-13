@@ -1,6 +1,8 @@
 
-# Ignore Content File
+# Ignore Content Files
 /contentfile.txt
+/file.css
+/minified.css
 
 # Ignore Compiled Program
 /main
