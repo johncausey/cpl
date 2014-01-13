@@ -2,21 +2,18 @@
 
 #include <stdio.h>
 
-#define INSPACE 1      // Inside space.
-#define OUTSPACE 0     // Outside space.
-#define INCOMMENT 1    // Inside comment.
-#define OUTCOMMENT 0   // Outside comment.
-#define INURL 1        // Inside URL.
-#define OUTURL 0       // Outside URL.
+#define IN 1        // Inside element.
+#define OUT 0       // Outside element.
+
 
 void main( int argc, char ** argv ) {
 	
 	FILE * fr = fopen(argv[1], "r");
 	FILE * fw = fopen("minified.css", "w");
 	int c, pc = 2;
-	int space_s = OUTSPACE;
-	int comment_s = OUTCOMMENT;
-	int url_s = OUTURL;
+	int space_s = OUT;
+	int comment_s = OUT;
+	int url_s = OUT;
 
 	if (fr) {
 		while ((c = getc(fr)) != EOF ) {
@@ -24,29 +21,29 @@ void main( int argc, char ** argv ) {
 
 				// Designate URL avoidance
 				if (c == '(') {
-					url_s = INURL;
+					url_s = IN;
 				} else if (c == ')') {
-					url_s = OUTURL;
+					url_s = OUT;
 				}
 
 				// Remove excess spaces
-				if ((c == ' ') && (space_s == OUTSPACE)) {
+				if ((c == ' ') && (space_s == OUT)) {
 					putc(c, fw);
-					space_s = INSPACE;
-				} else if ((c == ' ') && (space_s == INSPACE)) {
+					space_s = IN;
+				} else if ((c == ' ') && (space_s == IN)) {
 					;
-				} else if ((c != ' ') && (comment_s == OUTCOMMENT)) {
-					space_s = OUTSPACE;
+				} else if ((c != ' ') && (comment_s == OUT)) {
+					space_s = OUT;
 					putc(c, fw);
 				}
 
 				// Remove all comments
-				if ((c == '/') && (url_s == OUTURL)) {
-					comment_s = INCOMMENT;
+				if ((c == '/') && (url_s == OUT)) {
+					comment_s = IN;
 				}
-				if (comment_s == INCOMMENT) {
+				if (comment_s == IN) {
 					if ((c == '/') && (pc == '*')) {
-						comment_s = OUTCOMMENT;
+						comment_s = OUT;
 					}
 				}
 
