@@ -12,17 +12,29 @@ void main( int argc, char ** argv ) {
 	int c, pc = 0;
 	int comment_e = OUT;
 	int space_e = OUT;
+	int license_e = IN;
 
 	if (fr) {
 		while ((c = getc(fr)) != EOF ) {
-			if ((c != '\n') && (c != '\t')) {
-
+			
+			if (license_e == IN) {
 				if ((c == '*') && (pc == '/')) {
 					comment_e = IN;
 				} else if ((c == '/') && (pc == '*')) {
 					comment_e = OUT;
+					putc('/', fw);
+					putc('\n', fw);
+					license_e = OUT;
+					continue;
 				}
+				if (comment_e == IN) {
+					putc(c, fw);
+					pc = c;
+					continue;
+				}
+			}
 
+			if ((c != '\n') && (c != '\t')) {
 				if (comment_e == OUT) {
 					if (c == ' ' && space_e == OUT) {
 						putc(c, fw);
@@ -31,12 +43,9 @@ void main( int argc, char ** argv ) {
 						putc(c, fw);
 						space_e = OUT;
 					}
-					
 				}
-
-				// Set last int c to pc
-				pc = c;
 			}
+			pc = c;
 		}
 		printf("Minification Complete.\n");
 		fclose(fr);
