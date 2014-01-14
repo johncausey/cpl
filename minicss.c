@@ -10,9 +10,9 @@ void main( int argc, char ** argv ) {
 	FILE * fr = fopen(argv[1], "r");
 	FILE * fw = fopen("minified.css", "w");
 	int c, pc = 0;
-	int comment_e = OUT;
-	int space_e = OUT;
-	int license_e = IN;
+	int comment_e = OUT;     // Designate if comment
+	int space_e = OUT;       // Only allow one space
+	int license_e = IN;      // Leave license format
 
 	if (fr) {
 		while ((c = getc(fr)) != EOF ) {
@@ -53,8 +53,8 @@ void main( int argc, char ** argv ) {
 			pc = c;
 		}
 		printf("Minification complete at 'minified.css'.\n");
-		fclose(fr);
 		fclose(fw);
+		fclose(fr);
 	}
 	else {
 		printf("File not found.");
