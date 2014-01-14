@@ -1,9 +1,9 @@
-// Program to minify CSS files.
+// Program to minify CSS files, leaves license info.
 
 #include <stdio.h>
 
-#define IN 1        // Inside element.
-#define OUT 0       // Outside element.
+#define IN 1        // Inside bool.
+#define OUT 0       // Outside bool.
 
 void main( int argc, char ** argv ) {
 	
@@ -17,6 +17,7 @@ void main( int argc, char ** argv ) {
 	if (fr) {
 		while ((c = getc(fr)) != EOF ) {
 			
+			// Pass once to leave formatting of license comment.
 			if (license_e == IN) {
 				if ((c == '*') && (pc == '/')) {
 					comment_e = IN;
@@ -24,9 +25,11 @@ void main( int argc, char ** argv ) {
 					comment_e = OUT;
 					putc('/', fw);
 					putc('\n', fw);
+					putc('\n', fw);
 					license_e = OUT;
 					continue;
 				}
+				// Write inside comment.
 				if (comment_e == IN) {
 					putc(c, fw);
 					pc = c;
@@ -34,8 +37,10 @@ void main( int argc, char ** argv ) {
 				}
 			}
 
+			// Write all outside license CSS, skipping newlines and tabs.
 			if ((c != '\n') && (c != '\t')) {
 				if (comment_e == OUT) {
+					// Allow only one space.
 					if (c == ' ' && space_e == OUT) {
 						putc(c, fw);
 						space_e = IN;
@@ -47,7 +52,7 @@ void main( int argc, char ** argv ) {
 			}
 			pc = c;
 		}
-		printf("Minification Complete.\n");
+		printf("Minification complete at 'minified.css'.\n");
 		fclose(fr);
 		fclose(fw);
 	}
