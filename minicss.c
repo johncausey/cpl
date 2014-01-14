@@ -10,42 +10,28 @@ void main( int argc, char ** argv ) {
 	FILE * fr = fopen(argv[1], "r");
 	FILE * fw = fopen("minified.css", "w");
 	int c, pc = 0;
-	int space_s = OUT;
-	int comment_s = OUT;
-	int url_s = OUT;
+	int comment_e = OUT;
+	int space_e = OUT;
 
 	if (fr) {
 		while ((c = getc(fr)) != EOF ) {
 			if ((c != '\n') && (c != '\t')) {
 
-				// Designate URL avoidance
-				if ((c == '(') && (comment_s == OUT)) {
-					url_s = IN;
-				} else if ((c == ')') && (comment_s == OUT)) {
-					url_s = OUT;
+				if ((c == '*') && (pc == '/')) {
+					comment_e = IN;
+				} else if ((c == '/') && (pc == '*')) {
+					comment_e = OUT;
 				}
 
-				// Remove excess spaces
-				if ((c == ' ') && (space_s == OUT) && (comment_s == OUT)) {
-					putc(c, fw);
-					space_s = IN;
-				} else if ((c == ' ') && (space_s == IN)) {
-					;
-				} else if ((c != ' ') && (comment_s == OUT)) {
-					space_s = OUT;
-					putc(c, fw);
-				} else if (url_s == IN) {
-					putc(c, fw);
-				}
-
-				// Remove all comments
-				if ((c == '/') && (url_s == OUT) && (pc != '\'') && (pc != '\"')) {
-					comment_s = IN;
-				}
-				if (comment_s == IN) {
-					if ((c == '/') && (pc == '*')) {
-						comment_s = OUT;
+				if (comment_e == OUT) {
+					if (c == ' ' && space_e == OUT) {
+						putc(c, fw);
+						space_e = IN;
+					} else if (c != ' ') {
+						putc(c, fw);
+						space_e = OUT;
 					}
+					
 				}
 
 				// Set last int c to pc
