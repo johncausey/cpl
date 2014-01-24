@@ -1,5 +1,6 @@
 //
 // Backup program to run as process and end on complete.
+// Doesn't actually do anything yet.
 //
 
 #include <stdio.h>
@@ -19,7 +20,7 @@ int main() {
 
 	while (1) {
 		syslog (LOG_NOTICE, "Backup process has started.");
-		sleep (25); // Call backup stuff
+		sleep (5); // Call backup stuff
 		break;
 	}
 
