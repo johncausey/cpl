@@ -1,5 +1,4 @@
 // Tic Tac Toe game in C with computer player
-
 #include <stdio.h>
 
 #define PM 1 // Player mark of X
