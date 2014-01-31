@@ -8,7 +8,7 @@
 #define ROWSIZE 30
 #define COLSIZE 70
 
-int main(void) {
+int main() {
 
 	// Create boards
 	int grid[ROWSIZE][COLSIZE];
@@ -22,10 +22,11 @@ int main(void) {
 
 	// Show game
 	int n;
-	for (n = 0; n < 500; ++n) {
+	while (n = 0, n < 2000, ++n) {
 		refresh_board(grid);
-		sleep(1);
+		usleep(30000);
 		repopulate(grid, grid2);
+		copy_new_life(grid, grid2);
 	}
 
 	// End program
@@ -54,73 +55,83 @@ int initialize_board(int grid[ROWSIZE][COLSIZE]) {
 }
 
 int refresh_board(int grid[ROWSIZE][COLSIZE]) {
-	int r, c, n;
-	for (n = 0; n < 1; n++) {
-		// Build window
-		initscr();
+	clear();
+	int r, c;
+	// Build window
+	initscr();
 
-		// Iterate through board
-		for (r = 0; r < ROWSIZE; r++) {
-			for (c = 0; c < COLSIZE; c++) {
-				printw("%c ", grid[r][c]);
-			}
-			printw("\n");
+	// Iterate through board
+	for (r = 0; r < ROWSIZE; r++) {
+		for (c = 0; c < COLSIZE; c++) {
+			printw("%c ", grid[r][c]);
 		}
-		printw("\nGame of Life - No random variants\n\n");
-
-		// Load window and refresh
-		refresh();
-		clear();
+		printw("\n");
 	}
+	printw("\nGame of Life - No random variants\n\n");
+
+	// Load window and refresh
+	refresh();
 }
 
 int repopulate(int grid[ROWSIZE][COLSIZE], int grid2[ROWSIZE][COLSIZE]) {
 	int r, c, n;
-	memset(grid2, DEATH, ROWSIZE*COLSIZE*sizeof(int));
 	for (r = 0; r < ROWSIZE; r++) {
 		for (c = 0; c < COLSIZE; c++) {
 			n = 0;
-			if (grid[r-1][c-1] == LIFE) {
-				++n; // -1,-1
+			if (grid[(r-1)][(c-1)] == LIFE) {
+				n++; // -1,-1
 			}
-			if (grid[r-1][c] == LIFE) {
-				++n; // -1,0
+			if (grid[(r-1)][c] == LIFE) {
+				n++; // -1,0
 			}
-			if (grid[r-1][c+1] == LIFE) {
-				++n; // -1,1
+			if (grid[(r-1)][(c+1)] == LIFE) {
+				n++; // -1,1
 			}
-			if (grid[r][c-1] == LIFE) {
-				++n; // 0,-1
+			if (grid[r][(c-1)] == LIFE) {
+				n++; // 0,-1
 			}
-			if (grid[r][c+1] == LIFE) {
-				++n; // 0,1
+			if (grid[r][(c+1)] == LIFE) {
+				n++; // 0,1
 			}
-			if (grid[r+1][c-1] == LIFE) {
-				++n; // 1,-1
+			if (grid[(r+1)][(c-1)] == LIFE) {
+				n++; // 1,-1
 			}
-			if (grid[r+1][c] == LIFE) {
-				++n; // 1,0
+			if (grid[(r+1)][c] == LIFE) {
+				n++; // 1,0
 			}
-			if (grid[r+1][c+1] == LIFE) {
-				++n; // 1,1
+			if (grid[(r+1)][(c+1)] == LIFE) {
+				n++; // 1,1
 			}
-			if (n < 2) {
-				// Under-population death
-				grid2[r][c] = DEATH;
+
+			if (grid[r][c] == LIFE) {
+				if (n < 2) {
+					// Under-population
+					grid2[r][c] = DEATH;
+				}
+				if ((n == 2) || (n == 3)) {
+					// Sustainable population
+					grid2[r][c] = LIFE;
+				}
+				if (n > 3) {
+					// Over-population
+					grid2[r][c] = DEATH;
+				}
+			} else {
+				if (n == 3) {
+					// Reproduction
+					grid2[r][c] = LIFE;
+				} else {
+					grid2[r][c] = DEATH;
+				}
 			}
-			if ((n == 2) || (n == 3)) {
-				// Sustainable population
-				grid2[r][c] = LIFE;
-			}
-			if (n > 3) {
-				// Over-population death
-				grid2[r][c] = DEATH;
-			}
-			if ((grid[r][c] == DEATH) && (n == 3)) {
-				// Reproduction
-				grid2[r][c] = LIFE;
-			}
-			n = 0;
+		}
+	}
+}
+
+int copy_new_life(int grid[ROWSIZE][COLSIZE], int grid2[ROWSIZE][COLSIZE]) {
+	int r, c;
+	for (r = 0; r < ROWSIZE; r++) {
+		for (c = 0; c < COLSIZE; c++) {
 			grid[r][c] = grid2[r][c];
 		}
 	}
