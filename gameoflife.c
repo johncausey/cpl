@@ -1,15 +1,16 @@
-// Game of Life - in progress
+// Conway's Game of Life with random life spawn inclusion
 #include <ncurses.h> // stdio.h is included in ncurses
 #include <string.h> // memset
 #include <unistd.h> // usleep
 
 #define LIFE '0'
 #define DEATH ' '
-#define ROWSIZE 30
-#define COLSIZE 70
+#define ROWSIZE 35
+#define COLSIZE 75
+#define RANDOMLIFE 700
+#define GENERATIONS 5000
 
-int main() {
-
+int main(void) {
 	// Create boards
 	int grid[ROWSIZE][COLSIZE];
 	memset(grid, DEATH, ROWSIZE*COLSIZE*sizeof(int));
@@ -22,28 +23,31 @@ int main() {
 
 	// Show game
 	int n;
-	while (n = 0, n < 2000, ++n) {
-		refresh_board(grid);
-		usleep(30000);
+	int gen = 0;
+	while (n = 0, n < GENERATIONS, ++n) {
+		refresh_board(grid, gen);
+		usleep(50000);
 		repopulate(grid, grid2);
 		copy_new_life(grid, grid2);
+		gen++;
 	}
 
-	// End program
-	sleep(2);
+	// End simulation
 	endwin();
-
 	return 0;
 }
 
 int initialize_board(int grid[ROWSIZE][COLSIZE]) {
-
 	// Set random life
-	// srand(time(NULL));
-	// int random_row = rand() % ROWSIZE;
-	// int random_col = rand() % COLSIZE;
-	// grid[random_row][random_col] = LIFE;
+	int r;
+	srand(time(NULL));
+	for (r = 0; r < RANDOMLIFE; r++) {
+		int random_row = rand() % ROWSIZE;
+		int random_col = rand() % COLSIZE;
+		grid[random_row][random_col] = LIFE;
+	}
 
+	// Generate stable cell windmill
 	grid[10][10] = LIFE;
 	grid[10][11] = LIFE;
 	grid[10][12] = LIFE;
@@ -54,20 +58,22 @@ int initialize_board(int grid[ROWSIZE][COLSIZE]) {
 	grid[12][10] = LIFE;
 }
 
-int refresh_board(int grid[ROWSIZE][COLSIZE]) {
+int refresh_board(int grid[ROWSIZE][COLSIZE], int gen) {
+	// Clear old window
 	clear();
-	int r, c;
+
 	// Build window
 	initscr();
 
-	// Iterate through board
+	// Set current generation
+	int r, c;
 	for (r = 0; r < ROWSIZE; r++) {
 		for (c = 0; c < COLSIZE; c++) {
 			printw("%c ", grid[r][c]);
 		}
 		printw("\n");
 	}
-	printw("\nGame of Life - No random variants\n\n");
+	printw("\nGame of Life - %d random life spawns - %d Generations\n\n", RANDOMLIFE, gen);
 
 	// Load window and refresh
 	refresh();
@@ -103,6 +109,7 @@ int repopulate(int grid[ROWSIZE][COLSIZE], int grid2[ROWSIZE][COLSIZE]) {
 				n++; // 1,1
 			}
 
+			// Determine cell action
 			if (grid[r][c] == LIFE) {
 				if (n < 2) {
 					// Under-population
