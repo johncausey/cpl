@@ -5,28 +5,31 @@
 
 #define LIFE '0'
 #define DEATH ' '
-#define ROWSIZE 35
-#define COLSIZE 75
+#define ROWS 50 // 35
+#define COLS 100 // 75
 #define RANDOMLIFE 700
 #define GENERATIONS 5000
 
 int main(void) {
+	// Set random
+	srand(time(NULL));
+
 	// Create boards
-	int grid[ROWSIZE][COLSIZE];
-	memset(grid, DEATH, ROWSIZE*COLSIZE*sizeof(int));
-	int grid2[ROWSIZE][COLSIZE];
-	memset(grid2, DEATH, ROWSIZE*COLSIZE*sizeof(int));
+	int grid[ROWS][COLS];
+	memset(grid, DEATH, ROWS*COLS*sizeof(int));
+	int grid2[ROWS][COLS];
+	memset(grid2, DEATH, ROWS*COLS*sizeof(int));
 
 	// Set starter life
-	initialize_board(grid);
-	initialize_board(grid2);
+	initialize_board(grid, COLS, ROWS);
+	initialize_board(grid2, COLS, ROWS);
 
 	// Show game
 	int n;
 	int gen = 0;
 	while (n = 0, n < GENERATIONS, ++n) {
 		refresh_board(grid, gen);
-		usleep(50000);
+		usleep(100000);
 		repopulate(grid, grid2);
 		copy_new_life(grid, grid2);
 		gen++;
@@ -37,28 +40,17 @@ int main(void) {
 	return 0;
 }
 
-int initialize_board(int grid[ROWSIZE][COLSIZE]) {
+int initialize_board(int grid[ROWS][COLS]) {
 	// Set random life
 	int r;
-	srand(time(NULL));
 	for (r = 0; r < RANDOMLIFE; r++) {
-		int random_row = rand() % ROWSIZE;
-		int random_col = rand() % COLSIZE;
+		int random_row = rand() % ROWS;
+		int random_col = rand() % COLS;
 		grid[random_row][random_col] = LIFE;
 	}
-
-	// Generate stable cell windmill
-	grid[10][10] = LIFE;
-	grid[10][11] = LIFE;
-	grid[10][12] = LIFE;
-	grid[11][10] = LIFE;
-	grid[11][12] = LIFE;
-	grid[12][12] = LIFE;
-	grid[12][11] = LIFE;
-	grid[12][10] = LIFE;
 }
 
-int refresh_board(int grid[ROWSIZE][COLSIZE], int gen) {
+int refresh_board(int grid[ROWS][COLS], int gen) {
 	// Clear old window
 	clear();
 
@@ -67,8 +59,8 @@ int refresh_board(int grid[ROWSIZE][COLSIZE], int gen) {
 
 	// Set current generation
 	int r, c;
-	for (r = 0; r < ROWSIZE; r++) {
-		for (c = 0; c < COLSIZE; c++) {
+	for (r = 0; r < ROWS; r++) {
+		for (c = 0; c < COLS; c++) {
 			printw("%c ", grid[r][c]);
 		}
 		printw("\n");
@@ -79,54 +71,70 @@ int refresh_board(int grid[ROWSIZE][COLSIZE], int gen) {
 	refresh();
 }
 
-int repopulate(int grid[ROWSIZE][COLSIZE], int grid2[ROWSIZE][COLSIZE]) {
+int repopulate(int grid[ROWS][COLS], int grid2[ROWS][COLS]) {
 	int r, c, n;
-	for (r = 0; r < ROWSIZE; r++) {
-		for (c = 0; c < COLSIZE; c++) {
+	for (r = 0; r < ROWS; r++) {
+		for (c = 0; c < COLS; c++) {
 			n = 0;
 			if (grid[(r-1)][(c-1)] == LIFE) {
-				n++; // -1,-1
+				n++; // -1,-1 top left
 			}
 			if (grid[(r-1)][c] == LIFE) {
-				n++; // -1,0
+				n++; // -1,0 top
 			}
 			if (grid[(r-1)][(c+1)] == LIFE) {
-				n++; // -1,1
+				n++; // -1,1 top right
 			}
 			if (grid[r][(c-1)] == LIFE) {
-				n++; // 0,-1
+				n++; // 0,-1 left
 			}
 			if (grid[r][(c+1)] == LIFE) {
-				n++; // 0,1
+				n++; // 0,1 right
 			}
 			if (grid[(r+1)][(c-1)] == LIFE) {
-				n++; // 1,-1
+				n++; // 1,-1 bottom left
 			}
 			if (grid[(r+1)][c] == LIFE) {
-				n++; // 1,0
+				n++; // 1,0 bottom
 			}
 			if (grid[(r+1)][(c+1)] == LIFE) {
-				n++; // 1,1
+				n++; // 1,1 bottom right
 			}
 
 			// Determine cell action
 			if (grid[r][c] == LIFE) {
 				if (n < 2) {
-					// Under-population
-					grid2[r][c] = DEATH;
+					if (chance_of_life() == 1) {
+						// Under-population
+						grid2[r][c] = DEATH;
+					} else {
+						grid2[r][c] = LIFE;
+					}
 				}
 				if ((n == 2) || (n == 3)) {
-					// Sustainable population
-					grid2[r][c] = LIFE;
+					if (chance_of_life() == 1) {
+						// Sustainable population
+						grid2[r][c] = LIFE;
+					} else {
+						grid2[r][c] = DEATH;
+					}
 				}
 				if (n > 3) {
-					// Over-population
-					grid2[r][c] = DEATH;
+					if (chance_of_life() == 1) {
+						// Over-population
+						grid2[r][c] = DEATH;
+					} else {
+						grid2[r][c] = LIFE;
+					}
 				}
 			} else {
 				if (n == 3) {
-					// Reproduction
-					grid2[r][c] = LIFE;
+					if (chance_of_life() == 1) {
+						// Reproduction
+						grid2[r][c] = LIFE;
+					} else {
+						grid2[r][c] = DEATH;
+					}
 				} else {
 					grid2[r][c] = DEATH;
 				}
@@ -135,11 +143,21 @@ int repopulate(int grid[ROWSIZE][COLSIZE], int grid2[ROWSIZE][COLSIZE]) {
 	}
 }
 
-int copy_new_life(int grid[ROWSIZE][COLSIZE], int grid2[ROWSIZE][COLSIZE]) {
+int copy_new_life(int grid[ROWS][COLS], int grid2[ROWS][COLS]) {
 	int r, c;
-	for (r = 0; r < ROWSIZE; r++) {
-		for (c = 0; c < COLSIZE; c++) {
+	for (r = 0; r < ROWS; r++) {
+		for (c = 0; c < COLS; c++) {
 			grid[r][c] = grid2[r][c];
 		}
+	}
+}
+
+int chance_of_life() {
+	int c;
+	c = (rand() % (1000 + 1));
+	if (c > 10) {
+		return 1;
+	} else {
+		return 0;
 	}
 }
