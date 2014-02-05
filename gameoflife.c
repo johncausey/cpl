@@ -5,8 +5,8 @@
 
 #define LIFE '0'
 #define DEATH ' '
-#define ROWS 50 // 35
-#define COLS 100 // 75
+#define ROWS 35 // 50 // 35
+#define COLS 75 // 100 // 75
 #define RANDOMLIFE 700
 #define GENERATIONS 5000
 
